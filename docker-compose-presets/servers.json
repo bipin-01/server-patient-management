@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Widgets",
+      "Group": "Widgets",
+      "Port": 5432,
+      "Username": "postgres",
+      "Host": "widgets_db",
+      "SSLMode": "prefer",
+      "MaintenanceDB": "postgres",
+      "PassFile": "/pgadmin4/pgpass.json"
+    }
+  }
+}
