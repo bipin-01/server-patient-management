@@ -9,3 +9,90 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum Sex {
+  M
+  F
+  O
+}
+
+model Patient {
+  patient_ssn String @id @unique
+  patient_firstname String
+  patient_lastname String
+  patient_country String
+  patient_address1 String
+  patient_address2 String
+  patient_number1 String
+  patient_number2 String?
+  patient_sex Sex
+  patient_dob String?
+  patient_dod String?
+  patient_email String
+  patient_height Float
+  patient_weight String
+  patient_bloodtype String
+  patient_education_background String?
+  patient_occupation String
+  CreatedAt DateTime @default(now())
+  observation Observation[]
+}
+
+model Practitioner {
+  practitioner_id String  @id 
+  practitioner_firstname String?
+  practitioner_lastname String?
+  practitioner_address1 String?
+  practitioner_address2 String?
+  practitioner_number1 String?
+  practitioner_number2 String?
+  practitioner_checkin String?
+  practitioner_checkout String?
+  observation Observation[]
+}
+
+model Hospital{
+  hospital_id String @id
+  hospital_name String
+  hospital_address String
+  hospital_number String
+  hospital_email String
+  observation Observation[]
+}
+
+model Medication{
+  medication_id String @id
+  medication_name String
+  medication_company String
+  medication_level String
+  medication_remark String
+  observation Observation[]
+}
+
+model Nurse {
+  nurse_id String @id
+  nurse_firstname String
+  nurse_lastname String
+  nurse_address1 String
+  nurse_address2 String?
+  nurse_number1 String?
+  nurse_checkIn String?
+  nurse_checkOut String?
+  observation Observation[]
+}
+
+model Observation {
+  observation_id String  @id
+  observation_time String
+  observation_remark String
+  patient Patient @relation(fields: [patient_ssn], references: [patient_ssn])
+  patient_ssn String
+  practitioner Practitioner @relation(fields: [practitioner_id], references: [practitioner_id])
+  practitioner_id String
+  nurse Nurse @relation(fields: [nurse_id], references: [nurse_id])
+  nurse_id String
+  medication Medication @relation(fields: [medication_id], references: [medication_id])
+  medication_id String
+  hospital Hospital @relation(fields: [hospital_id], references: [hospital_id])
+  hospital_id String
+}
+

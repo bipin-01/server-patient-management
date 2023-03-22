@@ -5,9 +5,11 @@ import { AppService } from './app.service'
 import appConfig from './config/app.config'
 import { LoggerModule } from 'nestjs-pino'
 import { CommonModule } from './common/common.module'
+import { PatientsModule } from './patients/patients.module'
 @Module({
     imports: [
         CommonModule,
+        PatientsModule,
         ConfigModule.forFeature(appConfig),
         LoggerModule.forRoot({
             pinoHttp: {
@@ -22,7 +24,8 @@ import { CommonModule } from './common/common.module'
                     },
                 },
             },
-        })],
+        }),
+        PatientsModule],
     controllers: [AppController],
     providers: [AppService],
 })
