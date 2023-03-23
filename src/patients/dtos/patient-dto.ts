@@ -1,3 +1,4 @@
+import { IsNumber, IsString } from 'class-validator';
 import { Sex } from 'src/patients/enums/patients-enums';
 
 export class PatientDTO {
@@ -10,11 +11,11 @@ export class PatientDTO {
   patient_number1: string;
   patient_number2: string;
   patient_sex: Sex;
-  patient_dob: string;
-  patient_dod: string;
+  patient_dob?: Date;
+  patient_dod?: Date;
   patient_email: string;
   patient_height: number;
-  patient_weight: string;
+  patient_weight: number;
   patient_bloodtype: string;
   patient_education_background: string;
   patient_occupation: string;
@@ -43,13 +44,14 @@ export class NurseDto {
   nurse_address1: string;
   nurse_address2?: string;
   nurse_number1: string;
-  nurse_checkIn: string;
-  nurse_checkOut: string;
+  nurse_checkIn?: Date;
+  nurse_checkOut?: Date;
 }
 
 export class ObservationDTO {
   observation_id: string;
-  observation_time: string;
+  observation_date?: Date;
+  observation_time?: Date;
   observation_remark: string;
   patient_ssn: string;
   practitioner_id: string;
@@ -66,6 +68,6 @@ export class PractitionerDto {
   practitioner_address2?: string;
   practitioner_number1?: string;
   practitioner_number2?: string;
-  practitioner_checkin: string;
-  practitioner_checkout: string;
+  practitioner_checkin?: Date;
+  practitioner_checkout?: Date;
 }

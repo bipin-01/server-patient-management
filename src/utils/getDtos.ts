@@ -7,6 +7,11 @@ import {
   PractitionerDto,
 } from '../patients/dtos/index';
 
+import { parseDate, parseDateDod } from './parseDate';
+import { parseTime } from './parseTime';
+import { validateEmailFormat } from './validateEmailFormat';
+import { Logger } from '@nestjs/common';
+
 let patientDTO: PatientDTO;
 
 let practitionerDTO: PractitionerDto;
@@ -17,14 +22,13 @@ let medicationDTO: MedicationDTO;
 
 let nurseDTO: NurseDto;
 
-  let currentSSN = '';
-  let currentNurseId = '';
-  let currentPractitionerId = '';
-  let currentMedicationId = '';
-  let currentHospitalId = '';
+let currentSSN = '';
+let currentNurseId = '';
+let currentPractitionerId = '';
+let currentMedicationId = '';
+let currentHospitalId = '';
 
 export function getDtos(row: ROW) {
-
   const {
     patient_ssn,
     nurse_id,
@@ -33,24 +37,31 @@ export function getDtos(row: ROW) {
     medication_id,
     observation_id,
   } = row;
+
+  const logger = new Logger();
   if (patient_ssn.length > 1) {
     currentSSN = patient_ssn;
+
+    const validEmail = validateEmailFormat(row.patient_email);
+    if (!validEmail) {
+      logger.log('Invalid patient Email');
+    }
 
     patientDTO = {
       patient_ssn: row.patient_ssn,
       patient_firstname: row.patient_firstName,
-      patient_lastname:  row.patient_lastName,
+      patient_lastname: row.patient_lastName,
       patient_country: row.patient_country,
       patient_address1: row.patient_address1,
       patient_address2: row.patient_address2,
       patient_number1: row.patient_number1,
       patient_number2: row.patient_number2,
       patient_sex: row.patient_sex,
-      patient_dob: row.patient_DOB,
-      patient_dod: row.patient_DOD,
+      patient_dob: parseDate(row.patient_DOB),
+      patient_dod: parseDateDod(row.patient_DOD),
       patient_email: row.patient_email,
       patient_height: parseFloat(row.patient_height),
-      patient_weight: row.patient_weight,
+      patient_weight: parseFloat(row.patient_weight),
       patient_bloodtype: row.patient_bloodType,
       patient_education_background: row.patient_educationBackground,
       patient_occupation: row.patient_occupation,
@@ -58,6 +69,8 @@ export function getDtos(row: ROW) {
   }
 
   if (nurse_id.length > 1) {
+    const nurseCheckIn = parseTime(row.nurse_checkIn, row.observation_date);
+    const nurseCheckOut = parseTime(row.nurse_checkOut, row.observation_date);
     currentNurseId = nurse_id;
     nurseDTO = {
       nurse_id: row.nurse_id,
@@ -66,13 +79,21 @@ export function getDtos(row: ROW) {
       nurse_address1: row.nurse_address1,
       nurse_address2: row.nurse_address2,
       nurse_number1: row.nurse_number1,
-      nurse_checkIn: row.nurse_checkIn,
-      nurse_checkOut: row.nurse_checkOut,
+      nurse_checkIn: nurseCheckIn,
+      nurse_checkOut: nurseCheckOut,
     };
   }
 
   if (practitioner_id.length > 1) {
     currentPractitionerId = practitioner_id;
+    const practitionerCheckIn = parseTime(
+      row.practitioner_checkIn,
+      row.observation_date,
+    );
+    const practitionerCheckOut = parseTime(
+      row.practitioner_checkOut,
+      row.observation_date,
+    );
     practitionerDTO = {
       practitioner_id: row.practitioner_id,
       practitioner_firstname: row.practitioner_firstName,
@@ -81,13 +102,18 @@ export function getDtos(row: ROW) {
       practitioner_address2: row.practitioner_address2,
       practitioner_number1: row.practitioner_number1,
       practitioner_number2: row.practitioner_number2,
-      practitioner_checkin: row.practitioner_checkIn,
-      practitioner_checkout: row.practitioner_checkOut,
+      practitioner_checkin: practitionerCheckIn,
+      practitioner_checkout: practitionerCheckOut,
     };
   }
 
   if (hospital_id.length > 1) {
     currentHospitalId = hospital_id;
+
+    const validEmail = validateEmailFormat(row.hospital_email);
+    if (!validEmail) {
+      logger.log('Invalid hospital Email');
+    }
     hospitalDTO = {
       hospital_id: row.hospital_id,
       hospital_name: row.hospital_name,
@@ -108,9 +134,12 @@ export function getDtos(row: ROW) {
     };
   }
 
+  const observationTime = parseTime(row.observation_time, row.observation_date);
+
   const observationDTO = {
     observation_id: observation_id,
-    observation_time: row.observation_time,
+    observation_date: parseDate(row.observation_date),
+    observation_time: observationTime,
     observation_remark: row.observation_remark,
     patient_ssn: currentSSN,
     hospital_id: currentHospitalId,

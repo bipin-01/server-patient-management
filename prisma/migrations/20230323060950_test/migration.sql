@@ -25,11 +25,11 @@ CREATE TABLE "Patient" (
     "patient_number1" TEXT NOT NULL,
     "patient_number2" TEXT,
     "patient_sex" "Sex" NOT NULL,
-    "patient_dob" TEXT,
-    "patient_dod" TEXT,
+    "patient_dob" TIMESTAMP(3),
+    "patient_dod" TIMESTAMP(3),
     "patient_email" TEXT NOT NULL,
     "patient_height" DOUBLE PRECISION NOT NULL,
-    "patient_weight" TEXT NOT NULL,
+    "patient_weight" DOUBLE PRECISION NOT NULL,
     "patient_bloodtype" TEXT NOT NULL,
     "patient_education_background" TEXT,
     "patient_occupation" TEXT NOT NULL,
@@ -47,8 +47,8 @@ CREATE TABLE "Practitioner" (
     "practitioner_address2" TEXT,
     "practitioner_number1" TEXT,
     "practitioner_number2" TEXT,
-    "practitioner_checkin" TEXT,
-    "practitioner_checkout" TEXT,
+    "practitioner_checkin" TIMESTAMP(3),
+    "practitioner_checkout" TIMESTAMP(3),
 
     CONSTRAINT "Practitioner_pkey" PRIMARY KEY ("practitioner_id")
 );
@@ -83,8 +83,8 @@ CREATE TABLE "Nurse" (
     "nurse_address1" TEXT NOT NULL,
     "nurse_address2" TEXT,
     "nurse_number1" TEXT,
-    "nurse_checkIn" TEXT,
-    "nurse_checkOut" TEXT,
+    "nurse_checkIn" TIMESTAMP(3),
+    "nurse_checkOut" TIMESTAMP(3),
 
     CONSTRAINT "Nurse_pkey" PRIMARY KEY ("nurse_id")
 );
@@ -92,7 +92,8 @@ CREATE TABLE "Nurse" (
 -- CreateTable
 CREATE TABLE "Observation" (
     "observation_id" TEXT NOT NULL,
-    "observation_time" TEXT NOT NULL,
+    "observation_date" TIMESTAMP(3),
+    "observation_time" TIMESTAMP(3),
     "observation_remark" TEXT NOT NULL,
     "patient_ssn" TEXT NOT NULL,
     "practitioner_id" TEXT NOT NULL,
@@ -105,6 +106,9 @@ CREATE TABLE "Observation" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Patient_patient_ssn_key" ON "Patient"("patient_ssn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Hospital_hospital_email_key" ON "Hospital"("hospital_email");
 
 -- AddForeignKey
 ALTER TABLE "Observation" ADD CONSTRAINT "Observation_patient_ssn_fkey" FOREIGN KEY ("patient_ssn") REFERENCES "Patient"("patient_ssn") ON DELETE RESTRICT ON UPDATE CASCADE;

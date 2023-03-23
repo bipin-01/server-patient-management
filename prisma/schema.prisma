@@ -15,6 +15,8 @@ enum Sex {
   O
 }
 
+
+
 model Patient {
   patient_ssn String @id @unique
   patient_firstname String
@@ -25,11 +27,11 @@ model Patient {
   patient_number1 String
   patient_number2 String?
   patient_sex Sex
-  patient_dob String?
-  patient_dod String?
+  patient_dob DateTime?
+  patient_dod DateTime?
   patient_email String
   patient_height Float
-  patient_weight String
+  patient_weight Float
   patient_bloodtype String
   patient_education_background String?
   patient_occupation String
@@ -45,8 +47,8 @@ model Practitioner {
   practitioner_address2 String?
   practitioner_number1 String?
   practitioner_number2 String?
-  practitioner_checkin String?
-  practitioner_checkout String?
+  practitioner_checkin DateTime?
+  practitioner_checkout DateTime?
   observation Observation[]
 }
 
@@ -55,7 +57,7 @@ model Hospital{
   hospital_name String
   hospital_address String
   hospital_number String
-  hospital_email String
+  hospital_email String @unique
   observation Observation[]
 }
 
@@ -75,14 +77,15 @@ model Nurse {
   nurse_address1 String
   nurse_address2 String?
   nurse_number1 String?
-  nurse_checkIn String?
-  nurse_checkOut String?
+  nurse_checkIn DateTime?
+  nurse_checkOut DateTime?
   observation Observation[]
 }
 
 model Observation {
   observation_id String  @id
-  observation_time String
+  observation_date DateTime?
+  observation_time DateTime?
   observation_remark String
   patient Patient @relation(fields: [patient_ssn], references: [patient_ssn])
   patient_ssn String
